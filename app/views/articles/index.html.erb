@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="1044723646064-88uj11s257r42prisvobfpuum36of1c7.apps.googleusercontent.com">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crertal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 {
+            margin: 10px auto; /* Remove default margin for h1 */
+        }
+        
+        #loginRegisterBtn {
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+            margin: 10px auto;
+            padding: 8px 16px; /* Adjust the padding to make it smaller */
+            border: none;
+            border-radius: 4px;
+            font-size: 14px; /* Adjust the font size */
+        }
+        
+        #loginRegisterBtn:hover {
+            background-color: #555;
+        }
+        
+        #signOutBtn {
+            display: none; /* Initially hide the sign-out button */
+        }
+
+        section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input, button {
+            width: 100% ;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        /* Add styles for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            position: relative; /* Added to make position:absolute work */
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .g-signin2 {
+            margin-top: 20px; /* Adjust the margin as needed */
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Crertal</h1>
+        <button id="loginRegisterBtn" style="margin-left: 1650px;">Login/Register</button>
+        <a href="#" id="signOutBtn" onclick="signOut();" style="color: white;">Sign out</a>
+    </header>
+
+    <section>
+        <h2>Find Users and Form Workgroups</h2>
+
+        <form action="#" method="get" onsubmit="checkSignInAndRedirect('search'); return false;">
+            <label for="interests">Search by Hobby/Interests:</label>
+            <input type="text" id="interests" name="interests" placeholder="Enter your interests">
+
+            <label for="courses">Search by Courses:</label>
+            <input type="text" id="courses" name="courses" placeholder="Enter your courses">
+
+            <button type="submit">Search</button>
+        </form>
+
+        <form action="#" method="post" onsubmit="checkSignInAndRedirect('createWorkgroup'); return false;">
+            <label for="createWorkgroup">Create a Workgroup:</label>
+            <input type="text" id="createWorkgroup" name="createWorkgroup" placeholder="Enter workgroup name">
+
+            <label for="workgroupInterests">Workgroup Interests:</label>
+            <input type="text" id="workgroupInterests" name="workgroupInterests" placeholder="Enter workgroup interests">
+
+            <button type="submit">Create Workgroup</button>
+        </form>
+    </section>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            
+            <!-- Slider buttons to switch between login and register forms -->
+            <div id="formSwitch">
+                <button onclick="toggleForm()">Existing Account/Create New Account</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username">
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password">
+
+                <button type="submit">Login</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm">
+                <label for="Username">Username:</label>
+                <input type="text" id="Username" name="Username" placeholder="Enter your username">
+
+                <label for="Password">Password:</label>
+                <input type="password" id="Password" name="Password" placeholder="Enter your password">
+
+                <button type="submit">Register</button>
+            </form>
+
+            <!-- Google Sign-In Button -->
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        </div>
+    </div>
+
+
+    <script>
+
+        // Get the modal
+        var modal = document.getElementById('authModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("loginRegisterBtn");
+
+        // Get the sign-out button
+        var signOutBtn = document.getElementById("signOutBtn");
+
+        function openModal() {
+        modal.style.display = "block";
+        toggleForm(); 
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks on the button, open the modal
+        btn.onclick = function() {
+            openModal();
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+        function checkSignInAndRedirect(action) {
+            var auth2 = gapi.auth2.getAuthInstance();
+            if (!auth2.isSignedIn.get()) {
+                // User is not signed in, redirect to login page
+                openModal();
+            } else {
+                // User is signed in, perform the specified action
+                if (action === "search") {
+                    // Redirect to search page or perform search action
+                    alert("Performing search action");
+                } else if (action === "createWorkgroup") {
+                    // Redirect to create workgroup page or perform create workgroup action
+                    alert("Performing create workgroup action");
+                }
+            }
+        }
+
+        function toggleForm() {
+            var loginForm = document.getElementById("loginForm");
+            var registerForm = document.getElementById("registerForm");
+
+            // Toggle the display property of the forms
+            if (loginForm.style.display === "none") {
+                loginForm.style.display = "block";
+                registerForm.style.display = "none";
+            } else {
+                loginForm.style.display = "none";
+                registerForm.style.display = "block";
+            }
+        }
+
+        // Initially show the login form
+        showLoginForm();
+
+        // Function to update sign-out button visibility
+        function updateSignOutBtnVisibility() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            if (auth2.isSignedIn.get()) {
+                signOutBtn.style.display = "inline-block"; // Show the sign-out button
+            } else {
+                signOutBtn.style.display = "none"; // Hide the sign-out button
+            }
+        }
+
+        // Initialize the visibility on page load
+        updateSignOutBtnVisibility();
+
+        // Listen for changes in sign-in state
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignOutBtnVisibility);
+
+        // Function to sign out
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+                updateSignOutBtnVisibility(); // Update visibility after sign-out
+            });
+        }
+        
+    </script>
+
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); //Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); //This is null if the 'email' scope is not present.
+
+            // You can add additional logic here if needed
+
+            updateSignOutBtnVisibility(); // Update visibility after sign-in
+            closeModal(); // Close the modal after successful sign-in
+        }
+    </script>
+
+</body>
+</html>
