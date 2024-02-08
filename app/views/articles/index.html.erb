@@ -27,7 +27,7 @@
             margin: 10px auto; /* Remove default margin for h1 */
         }
         
-        #loginRegisterBtn {
+        #loginBtn {
             background-color: #333;
             color: #fff;
             cursor: pointer;
@@ -37,10 +37,26 @@
             border-radius: 4px;
             font-size: 14px; /* Adjust the font size */
         }
-        
-        #loginRegisterBtn:hover {
+
+        #loginBtn:hover {
             background-color: #555;
         }
+
+        #registerBtn {
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+            margin: 10px auto;
+            padding: 8px 16px; /* Adjust the padding to make it smaller */
+            border: none;
+            border-radius: 4px;
+            font-size: 14px; /* Adjust the font size */
+        }
+
+        #registerBtn:hover {
+            background-color: #555;
+        }
+
         
         #signOutBtn {
             display: none; /* Initially hide the sign-out button */
@@ -126,13 +142,27 @@
             margin-top: 20px; /* Adjust the margin as needed */
         }
 
+        #popupMessage {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
     </style>
 </head>
 <body>
 
     <header>
         <h1>Crertal</h1>
-        <button id="loginRegisterBtn" style="margin-left: 1650px;">Login/Register</button>
+        <button id="loginBtn" style="margin-left: 1450px;" onclick="openLoginModal()">Login</button>
+        <button id="registerBtn" style="margin-left: 0px;" onclick="openRegisterModal()">Register</button>
         <a href="#" id="signOutBtn" onclick="signOut();" style="color: white;">Sign out</a>
     </header>
 
@@ -163,12 +193,7 @@
     <div id="authModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            
-            <!-- Slider buttons to switch between login and register forms -->
-            <div id="formSwitch">
-                <button onclick="toggleForm()">Existing Account/Create New Account</button>
-            </div>
-
+        
             <!-- Login Form -->
             <form id="loginForm">
                 <label for="username">Username:</label>
@@ -181,12 +206,24 @@
             </form>
 
             <!-- Register Form -->
-            <form id="registerForm">
-                <label for="Username">Username:</label>
-                <input type="text" id="Username" name="Username" placeholder="Enter your username">
+            <form id="registerForm" action="#" method="post" onsubmit="registerUser(); return false;">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
 
-                <label for="Password">Password:</label>
-                <input type="password" id="Password" name="Password" placeholder="Enter your password">
+                <label for="fullname">Full Name:</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                <label for="interests">Interests:</label>
+                <input type="text" id="interests" name="interests" placeholder="Enter your interests" required>
+
+                <label for="courses">Courses:</label>
+                <input type="text" id="courses" name="courses" placeholder="Enter your courses" required>
 
                 <button type="submit">Register</button>
             </form>
@@ -196,6 +233,9 @@
         </div>
     </div>
 
+    <div id="popupMessage">
+        <p>Registration successful!</p>
+    </div>
 
     <script>
 
@@ -203,14 +243,21 @@
         var modal = document.getElementById('authModal');
 
         // Get the button that opens the modal
-        var btn = document.getElementById("loginRegisterBtn");
+        var loginBtn = document.getElementById("loginBtn");
+        var registerBtn = document.getElementById("registerBtn");
 
         // Get the sign-out button
         var signOutBtn = document.getElementById("signOutBtn");
 
-        function openModal() {
-        modal.style.display = "block";
-        toggleForm(); 
+        function openLoginModal() {
+            modal.style.display = "block";
+            showLoginForm(); // Show the login form when opening the modal
+        }
+
+        // Function to open the register modal
+        function openRegisterModal() {
+            modal.style.display = "block";
+            showRegisterForm(); // Show the register form when opening the modal
         }
 
         // Function to close the modal
@@ -246,19 +293,24 @@
             }
         }
 
-        function toggleForm() {
+        function showLoginForm() {
             var loginForm = document.getElementById("loginForm");
             var registerForm = document.getElementById("registerForm");
 
-            // Toggle the display property of the forms
-            if (loginForm.style.display === "none") {
-                loginForm.style.display = "block";
-                registerForm.style.display = "none";
-            } else {
-                loginForm.style.display = "none";
-                registerForm.style.display = "block";
-            }
+            // Show the login form and hide the register form
+            loginForm.style.display = "block";
+            registerForm.style.display = "none";
         }
+
+    // Function to show the register form
+    function showRegisterForm() {
+        var loginForm = document.getElementById("loginForm");
+        var registerForm = document.getElementById("registerForm");
+
+        // Show the register form and hide the login form
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+    }
 
         // Initially show the login form
         showLoginForm();
@@ -298,11 +350,62 @@
             console.log('Image URL: ' + profile.getImageUrl());
             console.log('Email: ' + profile.getEmail()); //This is null if the 'email' scope is not present.
 
+            var header = document.querySelector('header');
+
+            // Create a new element for displaying the user's name
+            var userNameElement = document.createElement('div');
+            userNameElement.textContent = profile.getName();
+
+            // Append the user's name element to the header
+            header.appendChild(userNameElement);
+
+            // Hide the login/register button
+            var loginRegisterBtn = document.getElementById('loginRegisterBtn');
+            loginRegisterBtn.style.display = 'none';
+
+            // Show the sign-out button
+            var signOutBtn = document.getElementById('signOutBtn');
+            signOutBtn.style.display = 'inline-block';
+
             // You can add additional logic here if needed
 
-            updateSignOutBtnVisibility(); // Update visibility after sign-in
-            closeModal(); // Close the modal after successful sign-in
+            // Close the modal after successful sign-in
+            closeModal();
         }
+
+        function registerUser() {
+            var formData = new FormData(document.getElementById("registerForm"));
+
+            fetch('/api/register', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text(); // Assuming backend sends a text response
+            })
+            .then(data => {
+                // Show pop-up message or redirect user to login page
+                alert('Registration successful!'); // Temporary alert message, you can replace this with a better UI/UX
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error during registration:', error);
+                // Optionally, display an error message to the user
+                alert('Error during registration. Please try again.'); // Temporary alert message, you can replace this with a better UI/UX
+            });
+        }
+
+
+
+    // Event listener for form submission
+    document.getElementById("registerForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+        registerUser(); // Call the function to register the user
+    });
+
     </script>
 
 </body>
