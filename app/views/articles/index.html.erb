@@ -14,6 +14,10 @@
             background-color: #f4f4f4;
         }
         
+        h1, h2, h3 {
+            font-family: 'Roboto', sans-serif;
+        }
+
         header {
             background-color: #333;
             color: #fff;
@@ -24,36 +28,37 @@
         }
         
         h1 {
-            margin: 10px auto; /* Remove default margin for h1 */
+            font-size: 24px;
+            margin: 0;
         }
-        
-        #loginBtn {
+
+        #loginBtn button[type="submit"] {
             background-color: #333;
             color: #fff;
             cursor: pointer;
             margin: 10px auto;
-            padding: 8px 16px; /* Adjust the padding to make it smaller */
+            padding: 8px 16px;
             border: none;
             border-radius: 4px;
-            font-size: 14px; /* Adjust the font size */
+            font-size: 14px;
         }
 
-        #loginBtn:hover {
+        #loginBtn button[type="submit"]:hover {
             background-color: #555;
         }
 
-        #registerBtn {
+        #registerBtn button[type="submit"] {
             background-color: #333;
             color: #fff;
             cursor: pointer;
             margin: 10px auto;
-            padding: 8px 16px; /* Adjust the padding to make it smaller */
+            padding: 8px 16px;
             border: none;
             border-radius: 4px;
-            font-size: 14px; /* Adjust the font size */
+            font-size: 14px;
         }
 
-        #registerBtn:hover {
+        #registerBtn button[type="submit"]:hover {
             background-color: #555;
         }
 
@@ -73,6 +78,18 @@
         
         h2 {
             color: #333;
+        }
+
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
         label {
@@ -119,7 +136,7 @@
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            position: relative; /* Added to make position:absolute work */
+            position: relative;
         }
 
         .close {
@@ -155,6 +172,18 @@
             z-index: 1000;
         }
 
+
+        @media screen and (min-width: 768px) {
+            header {
+                padding: 1em 2em; /* Increase padding for larger screens */
+            }
+        }
+
+        @media screen and (min-width: 1024px) {
+            section {
+                padding: 30px; /* Increase padding for larger screens */
+            }
+        }
     </style>
 </head>
 <body>
@@ -260,9 +289,29 @@
             showRegisterForm(); // Show the register form when opening the modal
         }
 
-        // Function to close the modal
         function closeModal() {
             modal.style.display = "none";
+        }
+
+        function updateSignOutBtnVisibility() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            if (auth2.isSignedIn.get()) {
+                signOutBtn.style.display = "inline-block";
+            } else {
+                signOutBtn.style.display = "none";
+            }
+        }
+
+        updateSignOutBtnVisibility();
+
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignOutBtnVisibility);
+
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+                updateSignOutBtnVisibility();
+            });
         }
 
         // When the user clicks on the button, open the modal
@@ -388,16 +437,14 @@
             })
             .then(data => {
                 // Show pop-up message or redirect user to login page
-                alert('Registration successful!'); // Temporary alert message, you can replace this with a better UI/UX
+                alert('Registration successful!');
             })
             .catch(error => {
                 // Handle errors
                 console.error('Error during registration:', error);
-                // Optionally, display an error message to the user
-                alert('Error during registration. Please try again.'); // Temporary alert message, you can replace this with a better UI/UX
+                alert('Error during registration. Please try again.');
             });
         }
-
 
 
     // Event listener for form submission

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Messaging</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+
+            width: 100%;
+            height: 100%;
+            background-color: #f8f9fa;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        .conversation-list {
+            flex: 1;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            max-width: 10%;
+        }
+        .conversation-list-item {
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .conversation-list-item:hover {
+            background-color: #f0f0f0;
+        }
+        .selected-conversation {
+            flex: 2;
+            padding: 20px;
+            overflow: auto;
+            max-width: 90%;
+        }
+        .conversation-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .message {
+            background-color: #e0f2f1;
+            color: #333;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+        .message.sender {
+            background-color: #b2dfdb;
+            color: #333;
+            align-self: flex-end;
+        }
+        .message-input {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow at the bottom */
+            box-sizing: border-box; /* Ensure padding is included in width */
+        }
+        .message-input textarea {
+            flex: 1;
+            resize: none;
+            padding: 12px;
+            border-radius: 20px;
+            border: 2px solid #ccc;
+            font-size: 16px;
+            margin-right: 1300px;
+        }
+        .message-input button {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .message-input button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="conversation-list">
+        <div class="conversation-list-item">User 1</div>
+        <div class="conversation-list-item">User 2</div>
+        <div class="conversation-list-item">User 3</div>
+        <div class="conversation-list-item">User 4</div>
+        <div class="conversation-list-item">User 5</div>
+    </div>
+    <div class="selected-conversation">
+        <div class="conversation-history">
+            <div class="message">alo mastre!</div>
+            <div class="message sender">nampon re leventi</div>
+        </div>
+        <div class="message-input">
+            <textarea placeholder="Type your message..."></textarea>
+            <button>Send</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
