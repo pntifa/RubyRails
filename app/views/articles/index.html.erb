@@ -394,32 +394,26 @@
     <script>
         function onSignIn(googleUser) {
             var profile = googleUser.getBasicProfile();
-            console.log('ID: ' + profile.getId()); //Do not send to your backend! Use an ID token instead.
+            console.log('ID: ' + profile.getId()); #Do not send to your backend! Use an ID token instead.
             console.log('Name: ' + profile.getName());
             console.log('Image URL: ' + profile.getImageUrl());
-            console.log('Email: ' + profile.getEmail()); //This is null if the 'email' scope is not present.
+            console.log('Email: ' + profile.getEmail()); #This is null if the 'email' scope is not present.
 
-            var header = document.querySelector('header');
+            #var header = document.querySelector('header');
 
-            // Create a new element for displaying the user's name
-            var userNameElement = document.createElement('div');
-            userNameElement.textContent = profile.getName();
+            #var userNameElement = document.createElement('div');
+            #userNameElement.textContent = profile.getName();
 
-            // Append the user's name element to the header
-            header.appendChild(userNameElement);
+            #header.appendChild(userNameElement);
 
-            // Hide the login/register button
-            var loginRegisterBtn = document.getElementById('loginRegisterBtn');
-            loginRegisterBtn.style.display = 'none';
+            #var loginRegisterBtn = document.getElementById('loginRegisterBtn');
+            #loginRegisterBtn.style.display = 'none';
 
-            // Show the sign-out button
-            var signOutBtn = document.getElementById('signOutBtn');
-            signOutBtn.style.display = 'inline-block';
+            #var signOutBtn = document.getElementById('signOutBtn');
+            #signOutBtn.style.display = 'inline-block';
 
-            // You can add additional logic here if needed
-
-            // Close the modal after successful sign-in
-            closeModal();
+        
+            #closeModal();
         }
 
         function registerUser() {

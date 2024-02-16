@@ -3,6 +3,6 @@ Rails.application.routes.draw do
   post '/api/register', to: 'registrations#create'
 
   # Define your existing routes for articles
-  root 'articles#private'
+  root 'articles#index'
   resources :articles
 end

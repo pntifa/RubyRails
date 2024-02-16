@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Private Messaging</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -52,7 +53,7 @@
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 10px;
-            max-width: 70%;
+            max-width: 20%;
         }
         .message.sender {
             background-color: #b2dfdb;
@@ -62,57 +63,125 @@
         .message-input {
             position: fixed;
             bottom: 0;
-            width: 100%;
+            width: 80%;
+            height: 13%;
             background-color: #fff;
             padding: 20px;
-            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow at the bottom */
-            box-sizing: border-box; /* Ensure padding is included in width */
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1); 
+            box-sizing: border-box; 
+            display: flex;
+            align-items: center; /* Align items vertically */
         }
+
         .message-input textarea {
             flex: 1;
             resize: none;
             padding: 12px;
-            border-radius: 20px;
+            width: calc(10% - 10px); 
+            height: 30%;
+            border-radius: 1000px;
             border: 2px solid #ccc;
             font-size: 16px;
-            margin-right: 1300px;
         }
+
         .message-input button {
-            padding: 12px 20px;
+            padding: 12px 15px; /* Adjusted padding for a more compact button */
             background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 20px;
             cursor: pointer;
             font-size: 16px;
+            margin-left: 10px; /* Adjusted margin to bring buttons closer */
             transition: background-color 0.3s;
         }
+
         .message-input button:hover {
             background-color: #0056b3;
         }
+
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="conversation-list">
-        <div class="conversation-list-item">User 1</div>
-        <div class="conversation-list-item">User 2</div>
-        <div class="conversation-list-item">User 3</div>
-        <div class="conversation-list-item">User 4</div>
-        <div class="conversation-list-item">User 5</div>
+    
     </div>
     <div class="selected-conversation">
         <div class="conversation-history">
-            <div class="message">alo mastre!</div>
-            <div class="message sender">nampon re leventi</div>
+         
         </div>
         <div class="message-input">
             <textarea placeholder="Type your message..."></textarea>
             <button>Send</button>
+            <button class="start-new-chat-btn">Start a New Chat</button>
         </div>
     </div>
+
+    <div class="conversation-tabs"></div>
 </div>
+
+<script>
+  $(document).ready(function() {
+    const conversations = ["User 1", "User 2", "User 3", "User 4", "User 5"];
+
+    function populateConversations() {
+      const conversationList = $(".conversation-list");
+      conversations.forEach((user, index) => {
+        const conversationItem = $("<div>")
+          .addClass("conversation-list-item")
+          .text(user)
+          .on("click", function() {
+            startNewChat(user);
+          });
+        conversationList.append(conversationItem);
+      });
+    }
+
+    // Function to handle starting a new chat
+    function startNewChat(user) {
+      const messageHistory = $(".selected-conversation").find(".conversation-history");
+      
+      // Check if the chat already started with "Hello, user#"
+      const lastMessage = messageHistory.children().last();
+      if (!lastMessage.hasClass("message") || !lastMessage.hasClass("sender")) {
+        messageHistory.empty(); 
+      }
+
+      messageHistory.append(
+        `<div class="message">Welcome to the chat with ${user}!</div>`
+      );
+    }
+
+    function sendMessage() {
+      const messageInput = $(".message-input textarea");
+      const messageText = messageInput.val().trim();
+      
+      if (messageText !== "") {
+        const messageHistory = $(".selected-conversation").find(".conversation-history");
+        const newMessage = $("<div>")
+          .addClass("message sender")
+          .text(messageText);
+        messageHistory.append(newMessage);
+
+        messageInput.val("");
+      }
+    }
+
+    // Event listener for send button click
+    $(".message-input button").on("click", sendMessage);
+
+    // Event listener for starting a new chat button click
+    $(".start-new-chat-btn").on("click", function() {
+      startNewChat("New User");
+    });
+
+    populateConversations();
+  });
+</script>
+
+
 
 </body>
 </html>
